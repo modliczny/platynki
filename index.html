@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lista Gier Coop</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>🎮 Platynki </h1>
+    <form id="gameForm">
+      <input type="text" id="gameName" placeholder="Nazwa gry" required />
+      <input type="url" id="guideLink" placeholder="Link do poradnika" required />
+      <input type="text" id="comment" placeholder="Komentarz" />
+      <button type="submit">Dodaj grę</button>
+    </form>
+    <table>
+      <thead>
+        <tr>
+          <th>Nazwa gry</th>
+          <th>Poradnik</th>
+          <th>Komentarz</th>
+        </tr>
+      </thead>
+      <tbody id="gamesList"></tbody>
+    </table>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
