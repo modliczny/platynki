@@ -15,6 +15,9 @@ const gamesRef = db.ref("coopGames");
 
 const gameForm = document.getElementById("gameForm");
 const gamesList = document.getElementById("gamesList");
+const sortBtn = document.getElementById("sortBtn");
+
+let gamesArray = [];
 
 // Dodawanie gry
 gameForm.addEventListener("submit", (e) => {
@@ -25,16 +28,38 @@ gameForm.addEventListener("submit", (e) => {
 
   if (name && guide) {
     const newGameRef = gamesRef.push();
-    newGameRef.set({ name, guide, comment });
+    newGameRef.set({ name, guide, comment, completed: false });
     gameForm.reset();
   }
 });
 
-// Wyświetlanie gier w tabeli na żywo
+// Sortowanie po nazwie
+sortBtn.addEventListener("click", () => {
+  gamesArray.sort((a, b) => a.name.localeCompare(b.name));
+  renderGames(gamesArray);
+});
+
+// Renderowanie gier
 gamesRef.on("value", (snapshot) => {
-  gamesList.innerHTML = "";
+  gamesArray = [];
   snapshot.forEach((childSnapshot) => {
     const game = childSnapshot.val();
+    game.key = childSnapshot.key;
+
+    if (typeof game.completed === "string") {
+      game.completed = game.completed === "true";
+    } else {
+      game.completed = !!game.completed;
+    }
+
+    gamesArray.push(game);
+  });
+  renderGames(gamesArray);
+});
+
+function renderGames(games) {
+  gamesList.innerHTML = "";
+  games.forEach((game) => {
     const row = document.createElement("tr");
 
     const nameTd = document.createElement("td");
@@ -49,11 +74,31 @@ gamesRef.on("value", (snapshot) => {
     guideTd.appendChild(link);
 
     const commentTd = document.createElement("td");
-    commentTd.textContent = game.comment || "";
+    const commentInput = document.createElement("input");
+    commentInput.type = "text";
+    commentInput.value = game.comment || "";
+    commentInput.style.width = "100%";
+    commentInput.addEventListener("change", () => {
+      gamesRef.child(game.key).update({ comment: commentInput.value.trim() });
+    });
+    commentTd.appendChild(commentInput);
+
+    const deleteTd = document.createElement("td");
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "🗑️";
+    deleteBtn.style.cursor = "pointer";
+    deleteBtn.addEventListener("click", () => {
+      if (confirm(`Usunąć grę: ${game.name}?`)) {
+        gamesRef.child(game.key).remove();
+      }
+    });
+    deleteTd.appendChild(deleteBtn);
 
     row.appendChild(nameTd);
     row.appendChild(guideTd);
     row.appendChild(commentTd);
+    row.appendChild(deleteTd);
+
     gamesList.appendChild(row);
   });
-});
+}
