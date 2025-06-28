@@ -5,24 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lista Gier Coop</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/871/871363.png" type="image/png">
 </head>
 <body>
   <div class="container">
-    <h1>🎮💿🏆 Platynki </h1>
+    <h1 class="page-title">🎮 Platynki Co-op 🏆</h1>
     <form id="gameForm">
-      <input type="text" id="gameName" placeholder="Nazwa gry" required />
-      <input type="url" id="guideLink" placeholder="Link do poradnika" required />
-      <input type="text" id="comment" placeholder="Komentarz" />
-      <button type="submit">Dodaj grę</button>
+      <input type="text" id="gameName" placeholder="🔢 Nazwa gry" required />
+      <input type="url" id="guideLink" placeholder="🔗 Link do poradnika" required />
+      <input type="text" id="comment" placeholder="💬 Komentarz" />
+      <button type="submit" class="add-btn">➕ Dodaj grę</button>
     </form>
-    <button id="sortBtn">🔤 Sortuj alfabetycznie</button>
+    <button id="sortBtn" class="sort-btn">🌐 Sortuj alfabetycznie</button>
+
     <table>
       <thead>
         <tr>
-          <th>Nazwa gry</th>
-          <th>Poradnik</th>
-          <th>Komentarz</th>
-          <th>Usuń</th>
+          <th>🔖 Nazwa</th>
+          <th>🔗 Poradnik</th>
+          <th>💬 Komentarz</th>
+          <th>❌ Usuń</th>
         </tr>
       </thead>
       <tbody id="gamesList"></tbody>
