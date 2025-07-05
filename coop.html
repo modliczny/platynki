@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coop</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/871/871363.png" type="image/png">
+</head>
+<body>
+  <div class="container">
+    <h1 class="page-title">🎮 Platynki coop 🏆</h1>
+    <form id="gameForm">
+      <input type="text" id="gameName" placeholder="🔢 Nazwa gry" required />
+      <input type="url" id="guideLink" placeholder="🔗 Link do poradnika" required />
+      <input type="text" id="comment" placeholder="💬 Komentarz" />
+      <button type="submit" class="add-btn">➕ Dodaj grę</button>
+    </form>
+    <button id="sortBtn" class="sort-btn">🌐 Sortuj alfabetycznie</button>
+
+    <table>
+      <thead>
+        <tr>
+          <th>🔖 Nazwa</th>
+          <th>🔗 Poradnik</th>
+          <th>💬 Komentarz</th>
+          <th>❌ Usuń</th>
+        </tr>
+      </thead>
+      <tbody id="gamesList"></tbody>
+    </table>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

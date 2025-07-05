@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Platynki Oskar</title>
+  <link rel="stylesheet" href="stylesolo.css" />
+</head>
+<body>
+  <div class="container">
+    <h1 class="page-title">🎮 Oskar Platynki Solo 🏆</h1>
+    <form id="gameForm">
+      <input type="text" id="gameName" placeholder="🔢 Nazwa gry" required />
+      <input type="url" id="guideLink" placeholder="🔗 Link do poradnika" required />
+      <input type="text" id="comment" placeholder="💬 Komentarz" />
+      <button type="submit" class="add-btn">➕ Dodaj grę</button>
+    </form>
+    <button id="sortBtn" class="sort-btn">🌐 Sortuj alfabetycznie</button>
+    <table>
+      <thead>
+        <tr>
+          <th>🔖 Nazwa</th>
+          <th>🔗 Poradnik</th>
+          <th>💬 Komentarz</th>
+          <th>❌ Usuń</th>
+        </tr>
+      </thead>
+      <tbody id="gamesList"></tbody>
+    </table>
+  </div>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDXoq877dPjsu1I9-fRmrsVYFUCr4kCEtI",
+      authDomain: "platynki-f9c18.firebaseapp.com",
+      databaseURL: "https://platynki-f9c18-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "platynki-f9c18",
+      storageBucket: "platynki-f9c18.appspot.com",
+      messagingSenderId: "1090471162008",
+      appId: "1:1090471162008:web:ed98ea638ff9b880a960ed"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const gamesRef = db.ref("oskarSingle");
+
+    const gameForm = document.getElementById("gameForm");
+    const gamesList = document.getElementById("gamesList");
+    const sortBtn = document.getElementById("sortBtn");
+
+    let gamesArray = [];
+
+    gameForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = document.getElementById("gameName").value.trim();
+      const guide = document.getElementById("guideLink").value.trim();
+      const comment = document.getElementById("comment").value.trim();
+
+      if (name && guide) {
+        const newGameRef = gamesRef.push();
+        newGameRef.set({ name, guide, comment });
+        gameForm.reset();
+      }
+    });
+
+    sortBtn.addEventListener("click", () => {
+      gamesArray.sort((a, b) => a.name.localeCompare(b.name));
+      renderGames(gamesArray);
+    });
+
+    gamesRef.on("value", (snapshot) => {
+      gamesArray = [];
+      snapshot.forEach((childSnapshot) => {
+        const game = childSnapshot.val();
+        game.key = childSnapshot.key;
+        gamesArray.push(game);
+      });
+      renderGames(gamesArray);
+    });
+
+    function renderGames(games) {
+      gamesList.innerHTML = "";
+      games.forEach((game) => {
+        const row = document.createElement("tr");
+
+        const nameTd = document.createElement("td");
+        nameTd.textContent = game.name;
+
+        const guideTd = document.createElement("td");
+        const link = document.createElement("a");
+        link.href = game.guide;
+        link.target = "_blank";
+        link.textContent = "Trophy Guide";
+        link.classList.add("guide-button");
+        guideTd.appendChild(link);
+
+        const commentTd = document.createElement("td");
+        const commentInput = document.createElement("input");
+        commentInput.type = "text";
+        commentInput.value = game.comment || "";
+        commentInput.addEventListener("change", () => {
+          gamesRef.child(game.key).update({ comment: commentInput.value.trim() });
+        });
+        commentTd.appendChild(commentInput);
+
+        const deleteTd = document.createElement("td");
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "🗑️";
+        deleteBtn.style.cursor = "pointer";
+        deleteBtn.addEventListener("click", () => {
+          if (confirm(`Usunąć grę: ${game.name}?`)) {
+            gamesRef.child(game.key).remove();
+          }
+        });
+        deleteTd.appendChild(deleteBtn);
+
+        row.appendChild(nameTd);
+        row.appendChild(guideTd);
+        row.appendChild(commentTd);
+        row.appendChild(deleteTd);
+
+        gamesList.appendChild(row);
+      });
+    }
+  </script>
+</body>
+</html>
